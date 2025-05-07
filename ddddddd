@@ -1,0 +1,45 @@
+local function fireRemote(eventName, args)
+    local remote = game:GetService("ReplicatedStorage"):FindFirstChild(eventName)
+    if remote and remote:IsA("RemoteEvent") then
+        remote:FireServer(unpack(args))
+    end
+end
+
+local function setValue(path, value)
+    local success, err = pcall(function()
+        local parts = path:split(".")
+        local target = _G
+        for i, part in ipairs(parts) do
+            if i == #parts then
+                target[part] = value
+            else
+                target = target[part]
+            end
+        end
+    end)
+    if not success then
+        warn("Failed to set value at path '" .. path .. "': " .. err)
+    end
+end
+
+local function bypassAntiCheat()
+    if _G.AntiCheat then
+        _G.AntiCheat.Enabled = false
+    end
+end
+
+local function unlockEverything()
+    bypassAntiCheat()
+    setValue("PlayerData.CharacterUnlocked", true)
+    setValue("PlayerData.ItemsUnlocked", true)
+    setValue("GameData.FlappyMenUnlocked", true)
+    setValue("GameData.AllLevelsUnlocked", true)
+    setValue("GameData.InfiniteLives", true)
+    setValue("GameData.InfiniteScoreMultiplier", true)
+    fireRemote("UnlockCharacterEvent", {"All"})
+    fireRemote("UnlockItemEvent", {"All"})
+    fireRemote("SyncGameDataEvent")
+    fireRemote("SaveGameEvent")
+end
+
+unlockEverything()
