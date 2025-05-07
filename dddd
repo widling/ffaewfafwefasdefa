@@ -16,11 +16,7 @@ end
 
 -- List of item names to spawn
 local itemsToSpawn = {
-    "IcePick",
-    "Shovel",
-    "Snowmobile",
-    "Tent",
-    "Campfire",
+    "Drico",
     -- Add more item names as needed
 }
 
